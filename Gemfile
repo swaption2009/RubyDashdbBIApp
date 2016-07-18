@@ -1,0 +1,6 @@
+source 'https://rubygems.org'
+ruby '2.2.3'
+gem 'sinatra'
+gem 'ibm_db', '3.0.4'
+gem 'googlecharts','1.6.8'
+gem 'rack'
