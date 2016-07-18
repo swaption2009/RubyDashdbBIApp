@@ -3,8 +3,8 @@ applications:
   memory: 256M
   instances: 1
   domain: mybluemix.net
-  name: RubyDashdbBIApp
-  host: RubyDashdbBIApp
+  name: rbbluaccl_test
+  host: rbbluaccl_test
   disk_quota: 1024M
   services:
-  - dashDB-c9
+  - dashDB-lw

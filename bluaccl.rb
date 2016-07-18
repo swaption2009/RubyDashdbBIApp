@@ -23,10 +23,10 @@ $profitAnalysisSQL = 'SELECT  "Product" as product, "Time_Year" as year, SUM("Gr
                  ON "GO_TIME_DIM2"."DAY_KEY" = "SLS_SALES_FACT"."ORDER_DAY_KEY"
                    INNER JOIN "GOSALESDW"."SLS_PRODUCT_DIM" "SLS_PRODUCT_DIM"
                    ON "SLS_PRODUCT_DIM"."PRODUCT_KEY" = "SLS_SALES_FACT"."PRODUCT_KEY"
-				   INNER JOIN "GOSALESDW"."SLS_PRODUCT_BRAND_LOOKUP" "SLS_PRODUCT_BRAND_LOOKUP" 
+				   INNER JOIN "GOSALESDW"."SLS_PRODUCT_BRAND_LOOKUP" "SLS_PRODUCT_BRAND_LOOKUP"
 					ON "SLS_PRODUCT_DIM"."PRODUCT_BRAND_KEY" = "SLS_PRODUCT_BRAND_LOOKUP"."PRODUCT_BRAND_CODE"
             WHERE
-              "EMP_EMPLOYEE_DIM1"."EMPLOYEE_KEY" BETWEEN 4001 AND 4972 AND 
+              "EMP_EMPLOYEE_DIM1"."EMPLOYEE_KEY" BETWEEN 4001 AND 4972 AND
 					"GO_TIME_DIM2"."CURRENT_YEAR" IN (\'2011\',\'2012\',\'2013\') AND
 						"SLS_PRODUCT_BRAND_LOOKUP"."PRODUCT_BRAND_EN" IN (\'TrailChef\', \'Hibernator\', \'Extreme\', \'Canyon Mule\', \'Husky\')
             GROUP BY
@@ -42,7 +42,7 @@ $profitAnalysisSQL = 'SELECT  "Product" as product, "Time_Year" as year, SUM("Gr
 
 $salesAnalysisSQL = 'SELECT
 						"GO_REGION_DIM1"."REGION_EN" AS region,
-						"GO_TIME_DIM2"."CURRENT_YEAR" AS year,  
+						"GO_TIME_DIM2"."CURRENT_YEAR" AS year,
 						SUM("SLS_SALES_FACT"."SALE_TOTAL") AS revenue
 					FROM
 						"GOSALESDW"."EMP_EMPLOYEE_DIM" "EMP_EMPLOYEE_DIM1"
@@ -53,10 +53,10 @@ $salesAnalysisSQL = 'SELECT
 							INNER JOIN "GOSALESDW"."SLS_RTL_DIM" "SLS_RTL_DIM"
 								ON "SLS_RTL_DIM"."RETAILER_SITE_KEY" = "SLS_SALES_FACT"."RETAILER_SITE_KEY"
 							INNER JOIN "GOSALESDW"."GO_REGION_DIM" "GO_REGION_DIM1"
-								ON "SLS_RTL_DIM"."RTL_COUNTRY_CODE" = "GO_REGION_DIM1"."COUNTRY_CODE" 
-					WHERE 
-						"EMP_EMPLOYEE_DIM1"."EMPLOYEE_KEY" BETWEEN 4001 AND 4972 
-					GROUP BY 
+								ON "SLS_RTL_DIM"."RTL_COUNTRY_CODE" = "GO_REGION_DIM1"."COUNTRY_CODE"
+					WHERE
+						"EMP_EMPLOYEE_DIM1"."EMPLOYEE_KEY" BETWEEN 4001 AND 4972
+					GROUP BY
 						"GO_REGION_DIM1"."REGION_EN",
 						"GO_TIME_DIM2"."CURRENT_YEAR"
 					ORDER BY
@@ -67,11 +67,11 @@ if(ENV['VCAP_SERVICES'])
 # we are running inside Paas, access database details from VCAP_Services
   $db = JSON.parse(ENV['VCAP_SERVICES'])["dashDB"]
   $credentials = $db.first["credentials"]
-  $host = $credentials["host"]
-  $username = $credentials["username"]
-  $password = $credentials["password"]
-  $database = $credentials["db"]
-  $port = $credentials["port"]
+  $host = $credentials["dashdb-entry-yp-dal09-07.services.dal.bluemix.net"]
+  $username = $credentials["dash8107"]
+  $password = $credentials["iHczSmDCJzZk"]
+  $database = $credentials["BLUDB"]
+  $port = $credentials["50000"]
 else
 # we are running local, provide local DB credentials
   $host = "localhost"
@@ -84,7 +84,7 @@ end
 def getDataFromDW
   #Connect to database using parsed credentials
   conn = IBM_DB.connect "DATABASE=#{$database};HOSTNAME=#{$host};PORT=#{$port};PROTOCOL=TCPIP;UID=#{$username};PWD=#{$password};", '', ''
-  
+
   #Run the analytic SQL
   stmt = IBM_DB.exec conn, $profitAnalysisSQL
   data = {}
@@ -105,7 +105,7 @@ end
 def getSalesDataFromDW
   #Connect to database using credetials in VCAP_SERVICES
   conn = IBM_DB.connect "DATABASE=#{$database};HOSTNAME=#{$host};PORT=#{$port};PROTOCOL=TCPIP;UID=#{$username};PWD=#{$password};", '', ''
-  
+
   #Run the analytic SQL
   stmt = IBM_DB.exec conn, $salesAnalysisSQL
   data = {}
@@ -130,9 +130,9 @@ def renderSalesBarGraph data
   array2010 = []
   regionNames = []
   max = 0 #max profit recorded for any brand
-  
+
   #Render a Bar chart that shows profits of each Product Brand in comparison year-to-year
-  
+
   data.each do |region,revenueHash|
     regionNames << region
     revenueHash.each do |year, revenue|
@@ -173,9 +173,9 @@ def renderBarGraph data
   array2013 = []
   productNames = []
   max = 0 #max profit recorded for any brand
-  
+
   #Render a Bar chart that shows profits of each Product Brand in comparison year-to-year
-  
+
   data.each do |product,profitHash|
     productNames << product
     profitHash.each do |year, profit|
