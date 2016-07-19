@@ -74,10 +74,10 @@ if(ENV['VCAP_SERVICES'])
   $port = $credentials["50000"]
 else
 # we are running local, provide local DB credentials
-  $host = "localhost"
-  $username = "username"
-  $password = "password"
-  $database = "database"
+  $host = "dashdb-entry-yp-dal09-07.services.dal.bluemix.net"
+  $username = "dash8107"
+  $password = "iHczSmDCJzZk"
+  $database = "BLUDB"
   $port = 50000
 end
 
